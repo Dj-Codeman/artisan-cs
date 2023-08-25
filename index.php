@@ -26,9 +26,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $key = hash_pbkdf2($hashAlgorithm, $b64_key, '', $iterations, $outputLength, true);
 
     $cipherdata = encrypt($key, $jsonData);
-    $filename = './data/data.ah';
+    $filename = "./data/";
+    $filename += $_POST['clientid'];
+    $filename += ".sec";
 
-    $file = fopen($filename, 'a');
+    $file = fopen($filename, 'x');
 
     if ($file) {
         // Write data to the file
@@ -45,6 +47,5 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     exit;
 }
 
-// include 'index.html';
 ?>
 
