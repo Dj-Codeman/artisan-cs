@@ -21,7 +21,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $jsonData = json_encode($data);
 
     shell_exec("doas bash static/scripts/prep.sh");
-    shell_exec("bash static/scripts/storage.sh " . $data->clientid . " /'$jsonData/'");
+    shell_exec("bash static/scripts/storage.sh " . $data->clientid . " '$jsonData'");
 
     header('Location: static/html/success.html');
     exit;
