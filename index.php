@@ -1,7 +1,6 @@
 <?php
 require_once('static/html/index.html');
 
-
 class UserData {
     public $clientid;
     public $servname;
@@ -27,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     header('Location: static/html/success.html');
     exit;
 }
-
 
 ?>
 
