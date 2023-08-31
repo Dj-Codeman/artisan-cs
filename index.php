@@ -1,12 +1,15 @@
 <?php
-require_once 'encrypt.php';
+require_once('static/html/index.html');
+
 
 class UserData {
+    public $clientid;
     public $servname;
     public $username;
     public $password;
 
-    public function __construct($servname, $username, $password) {
+    public function __construct($clientid, $servname, $username, $password) {
+        $this->clientid = $clientid;
         $this->servname = $servname;
         $this->username = $username;
         $this->password = $password;
@@ -15,37 +18,16 @@ class UserData {
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     // Processing the user data
-    $data = new UserData($_POST['servname'], $_POST['username'], $_POST['password']);
+    $data = new UserData($_POST['clientid'], $_POST['servname'], $_POST['username'], $_POST['password']);
     $jsonData = json_encode($data);
 
-    // Creating a password based on the users id
-    $b64_key = base64_encode($_POST['clientid']);
-    $hashAlgorithm = 'sha256';
-    $iterations = 10000;
-    $outputLength = 32; // 32 bytes (256 bits)
-    $key = hash_pbkdf2($hashAlgorithm, $b64_key, '', $iterations, $outputLength, true);
+    shell_exec("doas bash static/scripts/prep.sh");
+    shell_exec("bash static/scripts/storage.sh " . $data->clientid . " /'$jsonData/'");
 
-    $cipherdata = encrypt($key, $jsonData);
-    $filename = "./data/";
-    $filename += $_POST['clientid'];
-    $filename += ".sec";
-
-    $file = fopen($filename, 'x');
-
-    if ($file) {
-        // Write data to the file
-        fwrite($file, $cipherdata);
-
-        // Close the file
-        fclose($file);
-    } else {
-        echo "Failed to open the file.";
-    }
-
-
-    header('Location: success.html');
+    header('Location: static/html/success.html');
     exit;
 }
+
 
 ?>
 
